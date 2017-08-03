@@ -1,0 +1,75 @@
+@import '../vendor/bootstrap/_variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+@import '../shared/closeButton.scss';
+@import '../components/mobileMenu.scss';
+@import '../components/moreMenu.scss';
+
+.main-menu {
+  flex: 1;
+  order: 4;
+  padding: 0;
+  cursor: pointer;
+  text-align: center;
+
+  @media #{$mq-sm} {
+    order: 2;
+    cursor: default;
+  }
+
+  //For visible and moremenu
+  ul li a{
+    font-weight: $font-weight-bold;
+    position: relative;
+    transition: 0.5s color;
+    color: $dropdown-link-color;
+    display: block;
+    padding: 6px 17px;
+
+    span > .icon > svg {
+      transition: 0.5s fill;
+    }
+
+    &.active,
+    &:hover{
+      color: $brand-warning;
+
+      span > .icon > svg {
+        fill: $brand-danger;
+      }
+    }
+
+    > span {
+      display: flex;
+    }
+  }
+
+  .visibleLink{
+    position: relative; //for drop-down
+    > a{
+      color: $black;
+    }
+    &.active > a, //active father element in visiblemenu
+    & > a:hover,
+    & > .active{ //father element in visiblemenu with active child
+      color: $brand-danger;
+    }    
+  }
+
+  //It adds the divider only to visible elements except moremenu
+  & > div > ul:first-child > li{
+    &:after{
+      @include getDivider();
+    }
+  }
+
+  li ul:before {
+    position: absolute;
+    top: -20px;
+    left: 10px;    
+    content: '';
+    border: 10px solid $brand-nav;
+    border-top: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+  }
+}

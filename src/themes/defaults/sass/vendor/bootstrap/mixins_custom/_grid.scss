@@ -1,0 +1,182 @@
+// Mixins for appllying styles to the grid system.
+
+/**
+ * Base col styles.
+ */
+@mixin base-col {
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  padding-right: $grid-gutter-width;
+  padding-left: $grid-gutter-width;
+}
+
+/**
+ * Mixin to render all grid styles
+ * @param {string} $viewport - a viewport size.
+ */
+@mixin render-grid-col-styles($viewport) {
+  @include process-grid-cols($grid-columns, 'col-#{$viewport}', 'width');
+  @include process-grid-cols($grid-columns, 'col-offset-#{$viewport}', 'offset');
+  @include process-grid-cols($grid-columns, 'col-order-#{$viewport}', 'order');
+  
+  // Hide cols per viewport. This must come last to override base-col mixin.
+  .col-#{$viewport}-hide {
+    display: none;
+  }
+} 
+
+/**
+ * Process column classes.
+ * Loop thougth grid Columns and call render-grid-columns() for each column.
+ * @param {string} $columns - the amount of columns in grid system.
+ * @param {string} $class - the column class.
+ * @param {string} $type - a column style type.
+ */
+@mixin process-grid-cols($columns, $class, $type) {
+  @for $index from 0 through $columns {
+    @include render-grid-columns($index, $class, $type);
+  }
+}
+
+/**
+ * Render the styles that apply column sizes, offesets, and order.
+ * @param {number} $index - a comuln index
+ * @param {string} $class - the column class.
+ * @param {string} $type - a column style type.
+ */
+@mixin render-grid-columns($index, $class, $type) {
+  // Apply column widths calculated by percentages.
+  @if $type == 'width' and $index > 0  {
+    .#{$class}-#{$index} {
+      @include base-col();
+      flex-basis: percentage(($index / $grid-columns));
+      max-width: percentage(($index / $grid-columns));
+    }
+  }
+
+  // Apply column offset calculated by percentages.
+  @if $type == 'offset' {
+    .#{$class}-#{$index} {
+      margin-left: percentage(($index / $grid-columns));
+    }
+  }
+
+  // Apply order property for ordering columns.
+  @if $type == order and $index > 0 {
+    .#{$class}-#{$index} {
+      order: $index;
+    }
+  }
+}
+
+/**
+ * Render row and col classes are wrapped in media queries.
+ * Loop thougth all $class-prefixes and apply styles per viewport
+ * @param {string} $viewport - a viewport size.
+ */
+$class-prefixes: (
+'row-start', 'row-center', 'row-end', 'row-top', 'row-middle', 
+'row-bottom', 'row-around', 'row-between', 'row-reverse', 
+'col-first', 'col-last', 'col-start', 'col-end', 'col-center', 
+'col-baseline', 'col-stretch', 'col-auto'
+);
+
+@mixin render-responsive-styles($viewport) {
+  @each $class-prefix in $class-prefixes {
+    // Row alignment
+    @if $class-prefix == 'row-start' {
+      .#{$class-prefix}-#{$viewport} {
+        justify-content: flex-start;
+        text-align: start;
+      }
+    }
+    @if $class-prefix == 'row-center' {
+      .#{$class-prefix}-#{$viewport} {
+        justify-content: center;
+        text-align: center;
+      }
+    }
+    @if $class-prefix == 'row-end' {
+      .#{$class-prefix}-#{$viewport} {
+        justify-content: flex-end;
+        text-align: end;
+      }
+    }
+    @if $class-prefix == 'row-top' {
+      .#{$class-prefix}-#{$viewport} {
+        align-items: flex-start;
+      }
+    }
+    @if $class-prefix == 'row-middle' {
+      .#{$class-prefix}-#{$viewport} {
+        align-items: center;
+      }
+    }
+    @if $class-prefix == 'row-bottom' {
+      .#{$class-prefix}-#{$viewport} {
+        align-items: flex-end;
+      }
+    }
+    @if $class-prefix == 'row-around' {
+      .#{$class-prefix}-#{$viewport} {
+        justify-content: space-around;
+      }
+    }
+    @if $class-prefix == 'row-between' {
+      .#{$class-prefix}-#{$viewport} {
+        justify-content: space-between;
+      }
+    }
+    @if $class-prefix == 'col-first' {
+      .#{$class-prefix}-#{$viewport} {
+        order: -1;
+      }
+    }
+    @if $class-prefix == 'col-last' {
+      .#{$class-prefix}-#{$viewport} {
+        order: 1;
+      }
+    }
+    @if $class-prefix == 'row-reverse' {
+      .#{$class-prefix}-#{$viewport} {
+        flex-direction: row-reverse;
+      }
+    }
+    // Col alignment
+    @if $class-prefix == col-start {
+      .#{$class-prefix}-#{$viewport}  {
+        align-self: flex-start;
+      }
+    }
+    @if $class-prefix == col-end {
+      .#{$class-prefix}-#{$viewport}  {
+        align-self: flex-end;
+      }
+    }
+    @if $class-prefix == col-center {
+      .#{$class-prefix}-#{$viewport}  {
+        align-self: center;
+      }
+    }
+    @if $class-prefix == col-baseline {
+      .#{$class-prefix}-#{$viewport}  {
+        align-self: baseline;
+      }
+    }
+    @if $class-prefix == col-stretch {
+      .#{$class-prefix}-#{$viewport}  {
+        align-self: stretch;
+      }
+    }
+    // Auto width cols
+    @if $class-prefix == 'col-auto' {
+      .#{$class-prefix}-#{$viewport}  {
+        @include base-col();
+        flex-grow: 1;
+        flex-basis: 0;
+        max-width: 100%;
+      }
+    }
+  }
+}

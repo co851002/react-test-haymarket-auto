@@ -1,0 +1,166 @@
+@import './_functions.scss';
+
+/**
+* It returns the PX value with given a property and a rem value
+* @$property: string i.e. 'font-size'
+* @sizeValue: number i.e 16
+* Usage: getPx('font-size', 1.6); => returns 'font-size' : 16px
+*/
+@mixin getPx($property, $sizeValue: 1) {
+  #{$property}: convertRemToPx($sizeValue, $font-size-base);
+}
+
+/**
+* It returns the rem value with a px fallback given a property and a px value
+* @$property: string i.e. font-size
+* @sizeValue: number 16
+* Usage: getRem('font-size', 16); => returns 'font-size' : 16px 'font-size': 1.428rem
+*        getRem('padding', 15 10 20 30); => returns 
+*        'padding' : 15px 10px 20px 30px 
+*        'padding': 1.07143rem 0.71429rem 1.42857rem 2.14286rem (based on $font-size-base: 14px) ;
+*/
+@mixin getRem($property, $sizeValue: $font-size-base) {
+  #{$property}: getListWithUnit($sizeValue); //fallback for older browsers
+  #{$property}: convertPxToRem($sizeValue, $font-size-base);
+}
+
+/**
+* It returns the rules for resetting a ul element
+* @padding: String i.e. "10px 10px"
+* @margin: String i.e. "20px"
+*/
+@mixin reset-ul($padding: 0, $margin: 0){
+  list-style: none;
+  padding: $padding;
+  margin: $margin;
+}
+
+/**
+* It returns the code for a divider
+* @color: String i.e. $gray-light
+* @width: String i.e. 1px
+*/
+@mixin getDivider($color: $gray-light, $width: 1px, $top: 10px){
+  position: absolute;
+  top: $top;
+  bottom: auto;
+  right: 0;
+  left: auto;
+  height: 20px;
+  width: $width;
+  background: $gray-light;
+  content: '';
+}
+
+/**
+* It returns the code for a link. 
+* @default: String i.e. red.
+* @font-weight: String i.e. bold.
+*/
+@mixin link($default, $font-weight: normal) {
+  & {
+    a {
+      color: $default;
+      font-weight: $font-weight;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &:visited {
+        color: $default;
+      }
+
+      &:active,
+      &:focus {
+        color: $default;
+      }
+    }
+  }
+}
+
+/**
+* Viewport sized values with minimum and maximum.
+*
+* @param {string}   $property    - Css property to apply the responsive-value mixin
+* @param {Number}   $responsive  - Viewport-based size
+* @param {Number}   $min         - Minimum size (px)
+* @param {Number}   $max         - Maximum size (px) (optional)
+* @param {Number}   $fallback    - Fallback for viewport-based units (optional)
+
+* @example scss - 5vw font size (with 50px fallback), minumum of 35px and maximum of 150px: 
+* @include responsive-value(font-size, 5vw, 35px, 150px, 50px);
+*/
+
+@mixin responsive-value($property, $responsive, $min, $max: false, $fallback: false) {
+  $responsive-unitless: $responsive / ($responsive - $responsive + 1);
+  $dimension: if(unit($responsive) == 'vh', 'height', 'width');
+  $min-breakpoint: $min / $responsive-unitless * 100;
+  
+  @media ( max-#{$dimension}: #{$min-breakpoint} ) {
+    #{$property}: $min;
+  }
+  
+  @if $max {
+    $max-breakpoint: $max / $responsive-unitless * 100;
+    
+    @media ( min-#{$dimension}: #{$max-breakpoint} ) {
+      #{$property}: $max;
+    }
+  }
+  
+  @if $fallback {
+    #{$property}: $fallback;
+  }
+
+  @if true{ //always show. This is for the linter.
+    #{$property}: $responsive;
+  }
+}
+
+/**
+* Media query based sized values
+*
+* @param {string}   $property - Css property to apply the responsive-value mixin
+* @param {Number}   $valueXs  - value for xs media query
+* @param {Number}   $valueSm  - value for sm media query
+* @param {Number}   $valueMd  - value for md media query
+* @param {Number}   $valueLg  - value for lg media query
+* @example:
+* @include media-query-value(font-size, 16px, 17px, 18px, 20px);
+*/
+
+@mixin media-query-value($property, $valueXs: false, $valueSm: false, $valueMd: false, $valueLg: false) {
+  
+  @if $valueXs{
+    #{$property}: $valueXs;
+  }
+
+  @if $valueSm{
+    @media #{$mq-sm}{
+      #{$property}: $valueSm;
+    }
+  }
+
+  @if $valueMd{
+    @media #{$mq-md}{
+      #{$property}: $valueMd;
+    }    
+  }
+
+  @if $valueLg{
+    @media #{$mq-lg}{
+      #{$property}: $valueLg;
+    }
+  }
+  
+}
+
+
+@mixin focus-active-hover {
+  &:focus,
+  &:active,
+  &:hover {
+    @content;
+  }
+}

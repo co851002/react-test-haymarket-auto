@@ -1,0 +1,68 @@
+@import 'vendor/bootstrap/_variables_custom.scss';
+
+@charset "UTF-8";
+@import url(//fonts.googleapis.com/css?family=Bitter);
+@font-face {
+  font-family: 'Clear Sans';
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Thin.eot");
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Thin.eot?#iefix") format("embedded-opentype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Thin.woff) format("woff"),url(//whatcar.media/fonts/public/fonts/ClearSans-Thin.ttf) format("truetype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Thin.svg#clear_sans_thin) format("svg");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clear Sans';
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Light.eot");
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Light.eot?#iefix") format("embedded-opentype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Light.woff) format("woff"),url(//whatcar.media/fonts/public/fonts/ClearSans-Light.ttf) format("truetype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Light.svg#clear_sans_light) format("svg");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clear Sans';
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Regular.eot");
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Regular.eot?#iefix") format("embedded-opentype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Regular.woff) format("woff"),url(//whatcar.media/fonts/public/fonts/ClearSans-Regular.ttf) format("truetype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Regular.svg#clear_sans_regular) format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clear Sans';
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Medium.eot");
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Medium.eot?#iefix") format("embedded-opentype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Medium.woff) format("woff"),url(//whatcar.media/fonts/public/fonts/ClearSans-Medium.ttf) format("truetype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Medium.svg#clear_sans_medium) format("svg");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Clear Sans';
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Bold.eot");
+  src: url("//whatcar.media/fonts/public/fonts/ClearSans-Bold.eot?#iefix") format("embedded-opentype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Bold.woff) format("woff"),url(//whatcar.media/fonts/public/fonts/ClearSans-Bold.ttf) format("truetype"),url(//whatcar.media/fonts/public/fonts/ClearSans-Bold.svg#clear_sans_bold) format("svg");
+  font-weight: 700;
+  font-style: normal;
+}
+
+html{
+  font-size: $font-size-mobile;
+  @media #{$mq-sm}{
+    font-size: $font-size-base;
+  }
+  font-family: "Clear Sans","Helvetica Neue",Arial,Helvetica,Geneva,sans-serif;
+}
+
+//This rule is not part of icons/styles.css because that file can be completly replaced
+//and we need to keep this rule as a default
+[data-icon]:before {
+  vertical-align: middle;
+}
+
+img{
+  width: 100%;
+}
+
+.breakWords{
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+a {
+  &:hover {
+    cursor: pointer;
+  }
+}

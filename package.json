@@ -1,0 +1,178 @@
+{
+  "name": "aphrodite",
+  "description": "Whatcar.com Frontend layer",
+  "author": "HM Whatcar Team",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:3001/",
+  "engines": {
+    "node": "6.9.2",
+    "npm": "3.10.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/whatcar-hm/aphrodite-frontend.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "devDependencies": {
+    "autoprefixer": "6.4.1",
+    "babel-cli": "^6.24.1",
+    "babel-core": "6.14.0",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "6.2.5",
+    "babel-plugin-istanbul": "^3.1.2",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react-app": "^0.2.1",
+    "babel-register": "^6.22.0",
+    "babel-watch": "^2.0.6",
+    "case-sensitive-paths-webpack-plugin": "1.1.4",
+    "chai": "^4.0.0",
+    "chalk": "1.1.3",
+    "classnames": "^2.2.5",
+    "concurrently": "^3.1.0",
+    "connect-history-api-fallback": "1.3.0",
+    "cross-spawn": "4.0.0",
+    "css-loader": "0.24.0",
+    "css-modules-require-hook": "^4.0.5",
+    "css-mq-splitter-plugin": "^1.0.0",
+    "deep-freeze": "0.0.1",
+    "detect-port": "1.0.0",
+    "dotenv": "2.0.0",
+    "enzyme": "^2.8.2",
+    "esdoc": "^0.5.2",
+    "eslint": "^3.17.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-config-react-app": "^0.2.1",
+    "eslint-loader": "1.5.0",
+    "eslint-plugin-flowtype": "^2.18.1",
+    "eslint-plugin-import": "1.12.0",
+    "eslint-plugin-jsx-a11y": "2.2.2",
+    "eslint-plugin-react": "6.3.0",
+    "expose-loader": "^0.7.2",
+    "extract-text-webpack-plugin": "1.0.1",
+    "file-loader": "0.9.0",
+    "filesize": "3.3.0",
+    "find-cache-dir": "0.1.1",
+    "flow-bin": "^0.47.0",
+    "fs-extra": "0.30.0",
+    "gzip-size": "3.0.0",
+    "html-webpack-plugin": "2.22.0",
+    "http-proxy-middleware": "0.17.1",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "9.11.0",
+    "jsdom-global": "2.1.1",
+    "json-loader": "0.5.4",
+    "mocha": "^3.2.0",
+    "mocha-jenkins-reporter": "^0.3.6",
+    "node-sass": "^4.3.0",
+    "nyc": "^10.1.2",
+    "object-assign": "4.1.0",
+    "path-exists": "2.1.0",
+    "postcss-loader": "0.13.0",
+    "prepush": "^3.1.11",
+    "promise": "7.1.1",
+    "react-addons-perf": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dev-utils": "^0.2.1",
+    "recompose": "^0.23.4",
+    "recursive-readdir": "2.1.0",
+    "redux-devtools": "^3.4.0",
+    "redux-mock-store": "^1.2.2",
+    "resolve-url-loader": "^2.0.0",
+    "rimraf": "2.5.4",
+    "sass-loader": "^4.1.1",
+    "scss-to-json": "^1.1.0",
+    "sinon": "^2.2.0",
+    "sinon-stub-promise": "^4.0.0",
+    "strip-ansi": "3.0.1",
+    "style-loader": "0.13.1",
+    "stylelint": "^7.10.1",
+    "supertest": "^3.0.0",
+    "url-loader": "0.5.7",
+    "webpack": "1.13.2",
+    "webpack-dev-server": "1.16.1",
+    "whatwg-fetch": "1.0.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.22.0",
+    "bootstrap-sass": "^3.3.7",
+    "compression": "^1.6.2",
+    "express": "^4.14.0",
+    "fetch-everywhere": "^1.0.5",
+    "immutable": "^3.8.1",
+    "prop-types": "^15.5.8",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^4.4.5",
+    "react-resize-detector": "^0.3.3",
+    "react-retina-image": "^2.0.3",
+    "react-router": "^3.0",
+    "react-swipeable": "^3.9.2",
+    "react-transition-group": "^1.2.0",
+    "redux": "^3.6.0",
+    "redux-immutablejs": "0.0.8",
+    "redux-saga": "^0.14.3",
+    "svg4everybody": "^2.1.8"
+  },
+  "scripts": {
+    "postinstall": "./node_modules/prepush/bin/cli.js install",
+    "devserver": "NODE_ENV=development ./node_modules/.bin/babel-watch --presets es2015 ./src/server/server.dev.js",
+    "spinup": "node scripts/build.js && echo 'Starting server' && node build/server/server.js",
+    "spinup-perf": "PERF_ENV='true' node scripts/build.js && echo 'Starting server' && node build/server/server.js",
+    "server": "node build/server/server.js",
+    "start": "npm i && ./node_modules/.bin/concurrently \"npm run devserver\" \"node scripts/start.js\"",
+    "build": "node scripts/build.js",
+    "test-nocov": "RESOLVERS=$(paste -s -d ':' ./config/path.resolvers.conf) && NODE_PATH=$RESOLVERS NODE_ENV=test JUNIT_REPORT_PATH=./xunit.xml mocha -R mocha-jenkins-reporter --opts ./config/mocha.opts --require src/mochaopts",
+    "test-cov": "RESOLVERS=$(paste -s -d ':' ./config/path.resolvers.conf) && NODE_PATH=$RESOLVERS  NODE_ENV=test JUNIT_REPORT_PATH=./xunit.xml nyc mocha -R mocha-jenkins-reporter --opts ./config/mocha.opts --require src/mochaopts",
+    "test": "npm run test-cov && ./node_modules/.bin/nyc report --reporter=lcov",
+    "test-watch": "RESOLVERS=$(paste -s -d ':' ./config/path.resolvers.conf) && NODE_PATH=$RESOLVERS NODE_ENV=test JUNIT_REPORT_PATH=./xunit.xml mocha -R mocha-jenkins-reporter --opts ./config/mocha.opts --require src/mochaopts -w",
+    "linters": "./node_modules/.bin/eslint ./src/ --fix && ./node_modules/.bin/stylelint ./src/**/*.scss",
+    "jenkins": "sh scripts/jenkins.sh",
+    "flow": "flow"
+  },
+  "prepush": {
+    "tasks": [
+      "npm run linters",
+      "npm run flow",
+      "npm run test",
+      "npm run jenkins"
+    ],
+    "onDirtyState": "stash",
+    "coloredOuput": true
+  },
+  "babel": {
+    "presets": [
+      "react-app",
+      "flow"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
+  },
+  "nyc": {
+    "exclude": [
+      "test",
+      "test{,-*}.js",
+      "**/*test.js",
+      "**/__tests__/**",
+      "**/node_modules/**",
+      "src/utils_tests/test_mocks",
+      "src/server/api/config"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  }
+}

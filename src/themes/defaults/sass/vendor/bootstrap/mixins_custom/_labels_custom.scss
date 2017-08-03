@@ -1,0 +1,16 @@
+// Labels
+
+@mixin label-variant($bg-color: $label-default-bg, $text-color: $label-color, $hover-color: initial, $border-color: none) {
+  background-color: $bg-color;
+  color: $text-color;
+  @if $border-color != 'none' {
+    border: 1px solid $border-color;
+  }
+
+  &[href] {
+    &:hover,
+    &:focus {
+      background-color: $hover-color;
+    }
+  }
+}

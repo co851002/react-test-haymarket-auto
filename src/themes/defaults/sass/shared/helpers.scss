@@ -1,0 +1,33 @@
+@import '../vendor/bootstrap/_variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+@import '../vendor/bootstrap/mixins_custom/_functions.scss';
+
+/** Extends bootstrap text helper classes.
+**  Pattern: text-nameColorVariable. i.e. nameColorVariable = $gray-dark => .text-gray-dark
+**  Please refere to the _variables_custom.scss for list of colors.
+**/
+.text-gray-dark{
+  color: $gray-dark;
+}
+
+.text-gray-darker{
+  color: $gray-darker;
+}
+
+.text-bold{
+  font-weight: $font-weight-bold;
+}
+
+.text-lighter{
+  font-weight: $font-weight-ligher;
+}
+
+//Useful reusable classes
+.user-placeholder{
+  &[data-icon]{
+    font-size: 43px;
+    border: 1px solid #000;
+    padding: 5px;
+    line-height: 0;
+  }
+}

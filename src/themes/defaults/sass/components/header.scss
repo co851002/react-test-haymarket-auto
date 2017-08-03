@@ -1,0 +1,10 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.header {
+  background: $white;  
+  font-weight: $font-weight-bold;
+
+  @include media-query-value(font-size, $valueXs: $font-size-mobile, $valueSm: 16px);
+  @include media-query-value(padding, $valueXs: 13px 0, $valueSm: 18px 10px 12px);
+}

@@ -1,0 +1,26 @@
+.mainmenu,
+.socialmenu{
+  list-style: none;
+  padding: 0;
+}
+
+.socialmenu {
+  margin-top: 7px;
+  border-top: 1px solid $gray-darker;
+  padding-top: 10px;
+  li > a {
+    svg {
+      fill: $white;
+    }
+    
+    & > span > div{
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+.moremenuFlex{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}

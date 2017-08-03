@@ -1,0 +1,7 @@
+@import '../vendor/bootstrap/variables_custom';
+
+.close{
+  color: $brand-nav;
+  background-color: $white;
+  cursor: pointer;
+}

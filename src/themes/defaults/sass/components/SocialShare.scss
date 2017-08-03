@@ -1,0 +1,23 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.button {
+  border: 0;
+  border-radius: 0;
+  
+  > div > svg {
+    fill: $white;
+  }
+}
+
+.twitter-bg {
+  background: $twitter;
+}
+
+.facebook-bg {
+  background: $facebook;
+}
+
+.active {
+  color: $brand-primary;
+}

@@ -1,0 +1,469 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: WhatCar Component
+Outputs:
+  AppURL:
+    Description: 'URL to the APP load-balancer'
+    Value: !Sub
+              - 'https://${appid}.${basedomain}/'
+              -
+                basedomain:
+                  Fn::ImportValue:
+                    !Sub
+                      - ${infrastructure}-public-domain-name
+                      - infrastructure:
+                          !FindInMap [ environmentmap, !Ref environment, cluster ]
+Parameters:
+  repo:
+    Description: Source docker repo
+    Type: String
+    Default: 882365948249.dkr.ecr.eu-west-1.amazonaws.com
+  namespace:
+    Description: App namespace
+    Type: String
+  app:
+    Description: App to be deployed
+    Type: String
+  tag:
+    Description: the tag to be deployed
+    Type: String
+  environment:
+    Description: the target environment
+    Type: String
+    AllowedValues:
+    - 'ci'
+    - 'qa'
+    - 'uat'
+    - 'demo'
+    - 'test'
+    - 'prod'
+  newrelickey:
+    Default: 'fb2aa23f068793cfbde95a93e72898a6ad1eb4a4'
+    Description: NewRelic account key
+    Type: String
+
+  appid:
+    Description: Determines the component name and target URL
+    Type: String
+
+  appport:
+    Default: '3000'
+    Description: Port exposed by app container
+    Type: String
+
+Mappings:
+  environmentmap:
+      ci:
+        certificate: arn:aws:acm:eu-west-1:882365948249:certificate/39d7b3c4-5e7f-4e9f-8dd1-13d41609a866
+        cluster: dev
+        deploymax: 200
+        deployminhealthy: 0
+        deploycount: 2
+        appcpu: 256
+        appmemory: 128
+        elbinternal: "true"
+        elbexternal: "false"
+
+      qa:
+        certificate: arn:aws:acm:eu-west-1:882365948249:certificate/39d7b3c4-5e7f-4e9f-8dd1-13d41609a866
+        cluster: dev
+        deploymax: 200
+        deployminhealthy: 0
+        deploycount: 2
+        appcpu: 256
+        appmemory: 128
+        elbinternal: "false"
+        elbexternal: "true"
+
+      uat:
+        certificate: arn:aws:acm:eu-west-1:882365948249:certificate/39d7b3c4-5e7f-4e9f-8dd1-13d41609a866
+        cluster: dev
+        deploymax: 200
+        deployminhealthy: 0
+        deploycount: 2
+        appcpu: 256
+        appmemory: 128
+        elbinternal: "false"
+        elbexternal: "true"
+
+      demo:
+        certificate: arn:aws:acm:eu-west-1:882365948249:certificate/39d7b3c4-5e7f-4e9f-8dd1-13d41609a866
+        cluster: dev
+        deploymax: 200
+        deployminhealthy: 0
+        deploycount: 2
+        appcpu: 256
+        appmemory: 128
+        elbinternal: "false"
+        elbexternal: "true"
+
+      test:
+        certificate: arn:aws:acm:eu-west-1:882365948249:certificate/39d7b3c4-5e7f-4e9f-8dd1-13d41609a866
+        cluster: dev
+        deploymax: 200
+        deployminhealthy: 0
+        deploycount: 2
+        appcpu: 256
+        appmemory: 128
+        elbinternal: "false"
+        elbexternal: "true"
+
+      prod:
+        certificate: arn:aws:acm:eu-west-1:882365948249:certificate/39d7b3c4-5e7f-4e9f-8dd1-13d41609a866
+        cluster: prod
+        deploymax: 200
+        deployminhealthy: 0
+        deploycount: 4
+        appcpu: 256
+        appmemory: 128
+        elbinternal: "false"
+        elbexternal: "true"
+
+Conditions:
+  internalelb:
+    !And [!Equals [!FindInMap [ environmentmap, !Ref environment, elbinternal ], "true"], !Equals [!FindInMap [ environmentmap, !Ref environment, elbexternal ], "false"]]
+  externalelb:
+    !And [!Equals [!FindInMap [ environmentmap, !Ref environment, elbinternal ], "false"], !Equals [!FindInMap [ environmentmap, !Ref environment, elbexternal ], "true"]]
+  bothelb:
+    !And [!Equals [!FindInMap [ environmentmap, !Ref environment, elbinternal ], "true"], !Equals [!FindInMap [ environmentmap, !Ref environment, elbexternal ], "true"]]
+  buildinternal: 
+    !Or [!Condition internalelb, !Condition bothelb]
+  buildexternal:
+    !Or [!Condition externalelb, !Condition bothelb]
+
+Resources:
+
+  AppLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: !Join ["-",[!Ref appid,"log"]]
+      RetentionInDays: 7
+
+  AppServicePrivate:
+    Condition: buildinternal
+    DependsOn:
+      - AppPrivateLB
+      - AppPrivateLBListener
+    Properties:
+      Cluster:
+        Fn::ImportValue:
+          !Sub
+            - ${infrastructure}-cluster
+            - infrastructure:
+                !FindInMap [ environmentmap, !Ref environment, cluster ]
+      DeploymentConfiguration:
+        MaximumPercent: !FindInMap [ environmentmap, !Ref environment, deploymax ]
+        MinimumHealthyPercent: !FindInMap [ environmentmap, !Ref environment, deployminhealthy ]
+      DesiredCount: !FindInMap [ environmentmap, !Ref environment, deploycount ]
+      LoadBalancers:
+      - ContainerName: !Ref appid
+        ContainerPort: !Ref appport
+        TargetGroupArn:
+          Ref: LBTargetPrivate
+      Role:
+        Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-ecs-service-role
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      TaskDefinition:
+        Ref: AppTask
+    Type: AWS::ECS::Service
+
+  AppServicePublic:
+    Condition: buildexternal
+    DependsOn:
+      - AppPublicLB
+      - AppPublicLBListener
+    Properties:
+      Cluster:
+        Fn::ImportValue:
+          !Sub
+            - ${infrastructure}-cluster
+            - infrastructure:
+                !FindInMap [ environmentmap, !Ref environment, cluster ]
+      DeploymentConfiguration:
+        MaximumPercent: !FindInMap [ environmentmap, !Ref environment, deploymax ]
+        MinimumHealthyPercent: !FindInMap [ environmentmap, !Ref environment, deployminhealthy ]
+      DesiredCount: !FindInMap [ environmentmap, !Ref environment, deploycount ]
+      LoadBalancers:
+      - ContainerName: !Ref appid
+        ContainerPort: !Ref appport
+        TargetGroupArn:
+          Ref: LBTargetPublic
+      Role:
+        Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-ecs-service-role
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      TaskDefinition:
+        Ref: AppTask
+    Type: AWS::ECS::Service
+
+  AppServicePublicPrivate:
+    Condition: bothelb
+    DependsOn:
+      - AppPrivateLB
+      - AppPrivateLBListener
+      - AppPublicLB
+      - AppPublicLBListener
+    Properties:
+      Cluster:
+        Fn::ImportValue:
+          !Sub
+            - ${infrastructure}-cluster
+            - infrastructure:
+                !FindInMap [ environmentmap, !Ref environment, cluster ]
+      DeploymentConfiguration:
+        MaximumPercent: !FindInMap [ environmentmap, !Ref environment, deploymax ]
+        MinimumHealthyPercent: !FindInMap [ environmentmap, !Ref environment, deployminhealthy ]
+      DesiredCount: !FindInMap [ environmentmap, !Ref environment, deploycount ]
+      LoadBalancers:
+      - ContainerName: !Ref appid
+        ContainerPort: !Ref appport
+        TargetGroupArn:
+          Ref: LBTargetPrivate
+      - ContainerName: !Ref appid
+        ContainerPort: !Ref appport
+        TargetGroupArn:
+          Ref: LBTargetPublic
+      Role:
+        Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-ecs-service-role
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      TaskDefinition:
+        Ref: AppTask
+    Type: AWS::ECS::Service
+
+  AppTask:
+    Properties:
+      ContainerDefinitions:
+      - Command: []
+        Cpu: !FindInMap [ environmentmap, !Ref environment, appcpu ]
+        EntryPoint: []
+        Environment:
+        - Name: APP_VER
+          Value: !Sub ${environment}-${namespace}-${app}-${tag}
+        - Name: NEW_RELIC_APP_NAME
+          Value: !Ref appid
+        - Name: NEW_RELIC_LICENSE_KEY
+          Value: !Ref newrelickey
+        Essential: true
+        Image: !Sub ${repo}/${namespace}/${app}:${tag}
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group: !Ref AppLogGroup
+            awslogs-region: !Ref AWS::Region
+        Memory: !FindInMap [ environmentmap, !Ref environment, appmemory ]
+        MountPoints: []
+        Name: !Ref appid
+        PortMappings:
+        - ContainerPort: !Ref appport
+          HostPort: 0
+          Protocol: tcp
+      Volumes: []
+    Type: AWS::ECS::TaskDefinition
+
+  AppPublicDNS:
+    Condition: buildexternal
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+          Fn::ImportValue:
+                    !Sub
+                      - ${infrastructure}-public-zone
+                      - infrastructure:
+                          !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Comment: Public DNS name for App ${appid}
+      Name: !Sub
+              - '${appid}.${basedomain}'
+              -
+                basedomain:
+                  Fn::ImportValue:
+                    !Sub
+                      - ${infrastructure}-public-domain-name
+                      - infrastructure:
+                          !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Type: CNAME
+      TTL: '60'
+      ResourceRecords:
+      - !GetAtt AppPublicLB.DNSName
+
+  AppPrivateDNS:
+    Condition: buildinternal
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+          Fn::ImportValue:
+                    !Sub
+                      - ${infrastructure}-private-zone
+                      - infrastructure:
+                          !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Comment: Private DNS name for App ${appid}
+      Name: !Sub
+              - '${appid}.${basedomain}'
+              -
+                basedomain:
+                  Fn::ImportValue:
+                    !Sub
+                      - ${infrastructure}-private-domain-name
+                      - infrastructure:
+                          !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Type: CNAME
+      TTL: '60'
+      ResourceRecords:
+      - !GetAtt AppPrivateLB.DNSName
+
+  AppPrivateLB:
+    Condition: buildinternal
+    Properties:
+      LoadBalancerAttributes:
+        - Key: deletion_protection.enabled
+          Value: 'false'
+      Scheme: internal
+      SecurityGroups:
+        - Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-elb-securitygroup
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Subnets:
+        - Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-subneta
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+        - Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-subnetb
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Tags:
+      - Key:  Environment
+        Value: !Ref environment
+      - Key: Application
+        Value: !Ref appid
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+
+  AppPublicLB:
+    Condition: buildexternal
+    Properties:
+      LoadBalancerAttributes:
+      - Key: deletion_protection.enabled
+        Value: 'false'
+      Scheme: internet-facing
+      SecurityGroups:
+        - Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-elb-securitygroup
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Subnets:
+        - Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-subneta
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+        - Fn::ImportValue:
+                  !Sub
+                    - ${infrastructure}-subnetb
+                    - infrastructure:
+                        !FindInMap [ environmentmap, !Ref environment, cluster ]
+      Tags:
+      - Key:  Environment
+        Value: !Ref environment
+      - Key: Application
+        Value: !Ref appid
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+
+  AppPrivateLBListener:
+    Condition: buildinternal
+    DependsOn:
+      - AppPrivateLB
+      - LBTargetPrivate
+    Properties:
+      Certificates:
+        - CertificateArn: !FindInMap [ environmentmap, !Ref environment, certificate ]
+
+      DefaultActions:
+      - TargetGroupArn: !Ref LBTargetPrivate
+        Type: forward
+      LoadBalancerArn: !Ref AppPrivateLB
+      Port: 443
+      Protocol: HTTPS
+    Type: AWS::ElasticLoadBalancingV2::Listener
+
+  AppPublicLBListener:
+    Condition: buildexternal
+    DependsOn:
+      - AppPublicLB
+      - LBTargetPublic
+    Properties:
+      Certificates:
+        - CertificateArn: !FindInMap [ environmentmap, !Ref environment, certificate ]
+      DefaultActions:
+      - TargetGroupArn: !Ref LBTargetPublic
+        Type: forward
+      LoadBalancerArn: !Ref AppPublicLB
+      Port: 443
+      Protocol: HTTPS
+    Type: AWS::ElasticLoadBalancingV2::Listener
+
+  LBTargetPrivate:
+    Condition: buildinternal
+    Properties:
+      HealthCheckIntervalSeconds: '10'
+      HealthCheckPath: /
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: '5'
+      HealthyThresholdCount: '2'
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: Environment
+          Value: !Ref environment
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: '10'
+      UnhealthyThresholdCount: 2
+      VpcId:
+        Fn::ImportValue:
+          !Sub
+            - ${infrastructure}-vpc
+            - infrastructure:
+                !FindInMap [ environmentmap, !Ref environment, cluster ]
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+
+  LBTargetPublic:
+    Condition: buildexternal
+    Properties:
+      HealthCheckIntervalSeconds: '10'
+      HealthCheckPath: /
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: '5'
+      HealthyThresholdCount: '2'
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: Environment
+          Value: !Ref environment
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: '10'
+      UnhealthyThresholdCount: 2
+      VpcId:
+        Fn::ImportValue:
+          !Sub
+            - ${infrastructure}-vpc
+            - infrastructure:
+                !FindInMap [ environmentmap, !Ref environment, cluster ]
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup

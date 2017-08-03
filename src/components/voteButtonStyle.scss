@@ -1,0 +1,21 @@
+.active {
+  background: #e32116;
+  color: #ffffff;
+  border: none;
+  margin-bottom: 20px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.vote {
+  margin-bottom: 20px;
+
+  &:hover {
+    background: #e32116;
+    color: #ffffff;
+    border: none;
+    outline: none;
+  }
+}

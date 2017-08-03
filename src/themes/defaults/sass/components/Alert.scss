@@ -1,0 +1,61 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.alert-default {
+  background: $alert-default-bg;
+  border-radius: 0;
+  border-color: $alert-default-border;
+  margin-bottom: 0;
+  @include link($alert-default-text, $alert-link-weight);
+}
+
+// Link colors.
+.alert-success {
+  @include link($alert-success-text, $alert-link-weight);
+}
+
+.alert-info {
+  @include link($alert-info-text, $alert-link-weight);
+}
+
+.alert-warning {
+  @include link($alert-warning-text, $alert-link-weight);
+}
+
+.alert-danger {
+  @include link($alert-danger-text, $alert-link-weight);
+}
+
+// Dismiss Icon.
+.dismissCta {
+  float: right;
+  position: relative;
+  cursor: pointer;
+}
+
+.dismissIcon {
+  top: 0;
+  right: -25px;
+  color: inherit;
+}
+
+// Dismiss Bbutton.
+.dismissButton {
+  top: -7px;
+  font-size: 16px;
+}
+
+// Dismiss Animation
+.alertLeave {
+  opacity: 1;
+  height: 100%;
+}
+
+:export { transition: $alert-transition; }
+
+.alertLeaveActive {
+  opacity: 0.01;
+  height: 0;
+  transition: $alert-transition + ms;
+}
+

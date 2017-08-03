@@ -1,0 +1,22 @@
+@import '../vendor/bootstrap/variables_custom.scss';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.navFlex{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.flex{
+  display: flex;
+}
+
+.navFlexElemIcon{
+  justify-content: center;
+  align-items: center;
+}
+
+.listHorFlex{
+  @extend .navFlex;
+  @include reset-ul();
+}

@@ -1,0 +1,15 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.footer-menu {
+  ul {
+    padding: 0;
+
+    li {
+      list-style-image: none;
+      list-style-type: none;
+
+      @include link($brand-secondary);
+    }
+  }
+}

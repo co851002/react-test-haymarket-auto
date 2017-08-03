@@ -1,0 +1,79 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_grid.scss';
+
+// Grid wrapper styles.
+.container-fluid,
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: ($grid-gutter-width / 2);
+  padding-left: ($grid-gutter-width / 2);
+}
+
+// Fluid Grid Wrapper.
+.container-fluid {
+  width: 100%;
+}
+
+// Row styles
+.row {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-right: - ($grid-gutter-width);
+  margin-left: - ($grid-gutter-width);
+}
+
+/**
+ * Generate xs grid styles
+ */
+@include render-grid-col-styles('xs');
+@include render-responsive-styles('xs');
+
+/**
+ * Generate sm grid styles
+ */
+@media #{$mq-sm} {
+  .container {
+    width: $container-sm;
+  }
+
+  @include render-grid-col-styles('sm');
+}
+
+// Apply sm row alignment. 
+@media #{$mq-sm-only} {
+  @include render-responsive-styles('sm');
+}
+
+/**
+ * Generate md grid styles
+ */
+@media #{$mq-md} {
+  .container {
+    width: $container-md;
+  }
+  
+  @include render-grid-col-styles('md');
+}
+
+// Apply md row alignment.
+@media #{$mq-md-only} {
+  @include render-responsive-styles('md');
+}
+
+
+/**
+ * Generate lg grid styles
+ */
+@media #{$mq-lg} {
+  .container {
+    width: $container-lg;
+  }
+
+  // No media query as grid system can be fluid.
+  @include render-grid-col-styles('lg');
+  @include render-responsive-styles('lg');
+}

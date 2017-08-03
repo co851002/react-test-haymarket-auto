@@ -1,0 +1,39 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.login {
+  order: 3;
+  position: relative;
+  width: $login-width-xs;
+  text-align: center;
+  line-height: $line-height-computed;
+  font-size: $font-size-mobile;
+
+  @media #{$mq-sm} {
+    display: inline-flex;
+    order: 4;
+    padding: 0;
+    width: $login-width-sm;
+    @include getRem('font-size', 14);
+  }
+  @media #{$mq-md} {
+    width: $login-width-md;
+  }
+  @media #{$mq-lg} {
+    width: $login-width-lg;
+  }
+
+  .loginBtn {
+    padding: 0;
+    color: $black;
+    font-weight: 700;
+
+    &:hover {
+      color: $brand-primary;
+
+      svg {
+        fill: $brand-primary;
+      }
+    }
+  }
+}

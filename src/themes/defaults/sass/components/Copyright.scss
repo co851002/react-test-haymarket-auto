@@ -1,0 +1,21 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.copyright {
+  margin: 0 0 15px;
+
+  img {
+    max-width: 100%;
+    width: 120px;
+    height: auto;
+    margin: 0 0 10px;
+  }
+
+  div {
+    &:last-child {
+      color: $gray-dark;
+    }
+
+    @include link($brand-secondary);
+  }
+}

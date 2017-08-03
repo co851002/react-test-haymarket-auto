@@ -1,0 +1,61 @@
+
+/**
+* It Removes the unit of a value
+* @value {Number} $number - Number to remove unit from
+* Usage: strip-unit(16px); => returns 16
+*/
+@function strip-unit($value) {
+  @if type-of($value) == 'number' and not unitless($value) {
+    @return $value / ($value * 0 + 1);
+  }
+
+  @return $value;
+}
+
+/**
+* It returns a list of converted elements from px to rem
+* @list: {list/number/string} list of elments - 1px 2px - 5 10 5 10
+* @font-base: {number/string} Default: $font-size-base - font-base from which rem is referenced
+* @separator: {string} - Separator between elements - space, comma
+* Usage: getListRem(1px 10px 5px 10px, $font-base: 14px); => 0.07143rem 0.71429rem 0.35714rem 0.71429rem;
+*/
+@function convertPxToRem($list, $font-base: $font-size-base, $separator: space){
+  $listSupport: null;
+  @each $value in $list{
+    $listSupport: join($listSupport, ( strip-unit($value) / strip-unit($font-base) ) + rem, $separator);
+  }  
+
+  @return $listSupport;
+}
+
+/**
+* It returns a list of converted elements from rem to px
+* @list: {list/number/string} list of elments - 1px 2px - 5 10 5 10
+* @font-base: {number/string} Default: $font-size-base - font-base from which rem is referenced
+* @separator: {string} - Separator between elements - space, comma
+* Usage: getListRem(1px 10px 5px 10px, $font-base: 14px); => 0.07143rem 0.71429rem 0.35714rem 0.71429rem;
+*/
+@function convertRemToPx($list, $font-base: $font-size-base, $separator: space){
+  $listSupport: null;
+  @each $value in $list{
+    $listSupport: join($listSupport, ( strip-unit($value) * strip-unit($font-base) ) + px, $separator);
+  }  
+
+  @return $listSupport;
+}
+
+/**
+* It returns a list of 'clean' elements with the specified unit.
+* @list: {list/number/string} list of elments - 1px 2px - 5 10 5 10
+* @separator: {string} - Separator between elements - space, comma
+* Usage: getListWithUnit(1px 10 5 10px, px, space); => 1px 10px 5px 10px
+*        getListWithUnit(1 10 5 10, px, space); => 1px 10px 5px 10px
+*/
+@function getListWithUnit($list, $unit: px, $separator: space){
+  $listSupport: null;
+  @each $value in $list{
+    $listSupport: join($listSupport, strip-unit($value) + $unit, $separator);
+  }  
+
+  @return $listSupport;
+}

@@ -1,0 +1,28 @@
+<testsuites name="Mocha Tests">
+  <testsuite name="mainmenu renderer" tests="1" errors="0" failures="0" skipped="0" timestamp="2017-01-24T12:06:16" time="0.022">
+    <testcase classname="mainmenu renderer" name="renders a valid snapshot" time="0.016">
+      <system-out><![CDATA[<div className="main-menu">
+<Link to="/link1" activeClassName="active" onlyActiveOnIndex={false} style={{...}}>
+A link to Something
+</Link>
+<Link to="/link2" activeClassName="active" onlyActiveOnIndex={false} style={{...}}>
+Another link to something
+</Link>
+<button onClick={[Function]}>
+Add new Item
+</button>
+</div>
+]]></system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="home renderer" tests="1" errors="0" failures="0" skipped="0" timestamp="2017-01-24T12:06:16" time="0.007">
+    <testcase classname="home renderer" name="renders a valid snapshot using test renderer" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="mainmenu reducer" tests="2" errors="0" failures="0" skipped="0" timestamp="2017-01-24T12:06:16" time="0.003">
+    <testcase classname="mainmenu reducer" name="should return the initial state" time="0.001">
+    </testcase>
+    <testcase classname="mainmenu reducer" name="should handle ADD_MENU_ITEM">
+    </testcase>
+  </testsuite>
+</testsuites>

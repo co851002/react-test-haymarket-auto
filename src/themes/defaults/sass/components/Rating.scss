@@ -1,0 +1,28 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.rating {
+  display: flex;
+  fill: transparent;
+  padding: 20px 0;
+  line-height: 1;
+  height: 32px;
+  vertical-align: middle;
+  color: transparent;
+  font-size: 0;
+
+  div {
+    border: 1px solid red;
+    border-radius: 22px;
+    padding: 0;
+    margin: 0;
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.active {
+  svg {
+    fill: $brand-primary;
+  }
+}

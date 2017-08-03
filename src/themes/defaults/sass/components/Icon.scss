@@ -1,0 +1,24 @@
+@import '../vendor/bootstrap/variables_custom';
+
+.icon {
+  margin: 0 $icon-default-margin;
+}
+
+.icon-small {
+  width: $icon-size-small;
+  height: $icon-size-small;
+}
+
+.icon-default {
+  width: $icon-size-default;
+  height: $icon-size-default;
+}
+
+.icon-large {
+  width: $icon-size-large;
+  height: $icon-size-large;
+}
+
+.auto-height {
+  height: auto;
+}

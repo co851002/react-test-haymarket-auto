@@ -1,0 +1,37 @@
+@import '../vendor/bootstrap/variables_custom';
+@import '../vendor/bootstrap/mixins_custom/_mixins_custom.scss';
+
+.feedback {
+  padding-top: 4px;
+  padding-bottom: 15px;
+  margin: 0 0 15px;
+  border-bottom: 1px solid $gray-light;
+  float: none;
+
+  @include link($brand-secondary);
+
+  div {
+    &:first-child {
+      float: right;
+      margin: 0;
+    }
+
+    &:last-child {
+      display: block;
+      margin: 0 90px 0 0;
+    }
+  }
+
+  @media #{$mq-xs} {
+    div {
+      &:first-child {
+        float: none;
+        margin: 0 10px 5px 0;
+      }
+
+      &:last-child {
+        display: inline;
+      }
+    }
+  }
+}
